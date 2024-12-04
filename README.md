@@ -18,8 +18,8 @@ We also provide a simple GUI for you to use this program.
 - Provide a simple GUI for users
 
 ## Pre-requisites
-### Java installed on your machine
-### Maven installed on your machine (InteliJ IDEA has built-in Maven)
+- Java installed on your machine
+- Maven installed on your machine (InteliJ IDEA has built-in Maven)
   #### For Linux
   ```
   sudo apt install maven
@@ -31,7 +31,8 @@ We also provide a simple GUI for you to use this program.
   #### For Windows
   Download the maven from the official website and install it
 
-### - Declare environment variable for Maven (Reference: https://ithelp.ithome.com.tw/articles/10227841)
+- Declare environment variable for Maven
+  (Reference: https://ithelp.ithome.com.tw/articles/10227841)
   #### For Linux (For me, envrionment variable is already set)
   ```
   export PATH=$PATH:/usr/share/maven/bin
@@ -43,7 +44,7 @@ We also provide a simple GUI for you to use this program.
   #### For Windows
   Add the maven bin directory to the PATH
 
-### API Key from ChatGPT or Claude API
+- API Key from ChatGPT or Claude API
 
 ## Usage
 1. Download the files from the repository, using git clone or download the zip file
