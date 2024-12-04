@@ -1,6 +1,5 @@
 # Java-QuizletBot
 
-## Introduction
 This is a simple Java program that can help you to automatically generate Quizlet flashcards from "doc", "docx", "pdf", "ppt", "pptx", "xls", "xlsx" files.
 
 It has a built-in feature to convert the files to text and then generate the flashcards.
@@ -22,6 +21,34 @@ We also provide a simple GUI for you to use this program.
 1. Download the files from the repository, using git clone or download the zip file
 2. Navigate to the directory where the files are located
 
+### Pre-requisites
+- Java installed on your machine
+- Maven installed on your machine (InteliJ IDEA has built-in Maven)
+  #### For Linux
+  ```
+  sudo apt install maven
+  ```
+  #### For Mac
+  ```
+  brew install maven
+  ```
+  #### For Windows
+  Download the maven from the official website and install it
+
+- Declare environment variable for Maven (Reference: https://ithelp.ithome.com.tw/articles/10227841)
+  #### For Linux (For me, envrionment variable is already set)
+  ```
+  export PATH=$PATH:/usr/share/maven/bin
+  ```
+  #### For Mac
+  ```
+  export PATH=$PATH:/usr/local/Cellar/maven/3.8.1/bin
+  ```
+  #### For Windows
+  Add the maven bin directory to the PATH
+
+- API Key from ChatGPT or Claude API
+
 ### Using the terminal
 3. Run the following command to compile the program
 ```
@@ -37,6 +64,7 @@ java -cp target/ai-chat-client-1.0-SNAPSHOT.jar com.aichat.ChatGUI
 ```
 
 ### Using the IDE (Not tested yet)
+**InteliJ IDEA has built-in Maven**
 3. Open the project in your favorite IDE
 4. Declare the environment variables for API Key
 5. Run the ChatGUI.java file
