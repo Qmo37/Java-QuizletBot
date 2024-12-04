@@ -31,7 +31,7 @@ We also provide a simple GUI for you to use this program.
   #### For Windows
   Download the maven from the official website and install it
 
-### Declare environment variable for Maven (Reference: https://ithelp.ithome.com.tw/articles/10227841)
+### - Declare environment variable for Maven (Reference: https://ithelp.ithome.com.tw/articles/10227841)
   #### For Linux (For me, envrionment variable is already set)
   ```
   export PATH=$PATH:/usr/share/maven/bin
