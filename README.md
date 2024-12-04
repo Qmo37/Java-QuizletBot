@@ -12,7 +12,7 @@ We use maven to manage the dependencies and build the project.
 We also provide a simple GUI for you to use this program.
 
 ## Features
-- Convert "doc", "docx", "pdf", "ppt", "pptx", "xls", "xlsx" files to text
+- Convert doc, docx, pdf, ppt, pptx, xls, xlsx files to text
 - Generate Quizlet flashcards from the text
 - Use ChatGPT or Claude API to generate the questions and answers
 - Provide a simple GUI for users
