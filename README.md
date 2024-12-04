@@ -1,6 +1,6 @@
 # Java-QuizletBot
 
-This is a simple Java program that can help you to automatically generate Quizlet flashcards from "doc", "docx", "pdf", "ppt", "pptx", "xls", "xlsx" files.
+This is a simple Java program that can help you to automatically generate Quizlet flashcards from doc, docx, pdf, ppt, pptx, xls, xlsx files.
 
 It has a built-in feature to convert the files to text and then generate the flashcards.
 
