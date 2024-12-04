@@ -256,6 +256,21 @@ public class FlashcardPanel extends JPanel {
         }
     }
 
+    public void addFlashcard(String question, String answer) {
+        // Add the Q&A pair to your flashcards collection
+        // Implementation depends on how you're storing flashcards
+        flashcards.add(new Flashcard(question, answer));
+        currentIndex = flashcards.size() - 1;
+        updateCard();
+    }
+
+    public void clearFlashcards() {
+        // Clear existing flashcards before loading new ones
+        flashcards.clear();
+        currentIndex = 0;
+        updateCard();
+    }
+
     private void updateCard() {
         if (flashcards.isEmpty()) {
             cardLabel.setText("No flashcards available");

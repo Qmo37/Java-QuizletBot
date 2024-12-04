@@ -217,7 +217,9 @@ public class ChatGUI extends JFrame {
             // Create a CompletableFuture to process the input asynchronously
             () -> { // Supply a function that sends the input to the AI service
                 try {
-                    return aiClient.sendMessage(input); // Send the input to the AI service and get the response
+                    String response = aiClient.sendMessage(input); // Send the input to the AI service and get the response
+                    saveAIResponseToJson(response);
+                    return response;
                 } catch (IOException e) {
                     throw new CompletionException(e);
                 }
@@ -298,6 +300,64 @@ public class ChatGUI extends JFrame {
             });
     }
 
+    private void saveAIResponseToJson(String aiResponse) {
+        List<QAPair> qaPairs = new ArrayList<>();
+        String[] lines = aiResponse.split("\n");
+        String currentQuestion = null;
+
+        for (String line : lines) {
+            if (line.trim().startsWith("Q:")) {
+                currentQuestion = line.substring(2).trim();
+            } else if (
+                line.trim().startsWith("A:") && currentQuestion != null
+            ) {
+                String answer = line.substring(2).trim();
+                qaPairs.add(new QAPair(currentQuestion, answer));
+                currentQuestion = null;
+            }
+        }
+
+        try {
+            File outputDir = new File("flashcards");
+            if (!outputDir.exists()) {
+                outputDir.mkdir();
+            }
+            String timestamp = String.valueOf(System.currentTimeMillis());
+            File jsonFile = new File(
+                outputDir,
+                "flashcards_" + timestamp + ".json"
+            );
+
+            try (
+                BufferedWriter writer = new BufferedWriter(
+                    new FileWriter(jsonFile)
+                )
+            ) {
+                writer.write("{\n  \"flashcards\": [\n");
+                for (int i = 0; i < qaPairs.size(); i++) {
+                    QAPair pair = qaPairs.get(i);
+                    writer.write("    {\n");
+                    writer.write(
+                        "      \"question\": \"" +
+                        escapeJson(pair.getQuestion()) +
+                        "\",\n"
+                    );
+                    writer.write(
+                        "      \"answer\": \"" +
+                        escapeJson(pair.getAnswer()) +
+                        "\"\n"
+                    );
+                    writer.write(
+                        "    }" + (i < qaPairs.size() - 1 ? "," : "") + "\n"
+                    );
+                }
+                writer.write("  ]\n}");
+            }
+        } catch (IOException e) {
+            showError("Error saving flashcards: " + e.getMessage());
+        }
+    }
+
     private void showProgress(boolean show) {
         SwingUtilities.invokeLater(() -> {
             progressBar.setVisible(show);
@@ -333,34 +393,71 @@ public class ChatGUI extends JFrame {
     }
 
     private void createFlashcardsFromLastResponse() {
-        String chatText = chatArea.getText();
-        String[] messages = chatText.split("\n");
-        StringBuilder flashcardText = new StringBuilder();
+        // Open file chooser to select the JSON file
+        JFileChooser fileChooser = new JFileChooser(new File("flashcards"));
+        fileChooser.setFileFilter(
+            new javax.swing.filechooser.FileFilter() {
+                public boolean accept(File f) {
+                    return (
+                        f.isDirectory() ||
+                        f.getName().toLowerCase().endsWith(".json")
+                    );
+                }
 
-        for (String message : messages) {
-            if (message.startsWith("AI:")) {
-                String aiResponse = message.substring(3).trim();
-                // Try to find question-answer pairs in the AI response
-                String[] lines = aiResponse.split("\n");
-                for (String line : lines) {
-                    if (line.startsWith("Q:") || line.startsWith("A:")) {
-                        flashcardText.append(line).append("\n");
+                public String getDescription() {
+                    return "JSON Files (*.json)";
+                }
+            }
+        );
+
+        int result = fileChooser.showOpenDialog(this);
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFile = fileChooser.getSelectedFile();
+            try {
+                String jsonContent = new String(
+                    Files.readAllBytes(selectedFile.toPath())
+                );
+                // Parse JSON content and create flashcards
+                parseJsonAndCreateFlashcards(jsonContent);
+                cardLayout.show(contentPanel, "flashcards");
+            } catch (IOException e) {
+                showError("Error reading flashcards file: " + e.getMessage());
+            }
+        }
+    }
+
+    private void parseJsonAndCreateFlashcards(String jsonContent) {
+        try {
+            // Basic JSON parsing (you might want to use a proper JSON library)
+            String[] pairs = jsonContent.split("\\{\"question\":\"");
+            boolean foundCards = false;
+
+            for (String pair : pairs) {
+                if (pair.contains("\"answer\":\"")) {
+                    String[] parts = pair.split("\",\"answer\":\"");
+                    if (parts.length == 2) {
+                        String question = parts[0];
+                        String answer = parts[1].split("\"")[0];
+                        // Unescape JSON strings
+                        question = unescapeJson(question);
+                        answer = unescapeJson(answer);
+                        // Add to flashcard panel
+                        flashcardPanel.addFlashcard(question, answer);
+                        foundCards = true;
                     }
                 }
             }
-        }
 
-        if (flashcardText.length() > 0) {
-            flashcardPanel.loadFlashcardsFromText(flashcardText.toString());
-            cardLayout.show(contentPanel, "flashcards");
-        } else {
-            JOptionPane.showMessageDialog(
-                this,
-                "No flashcard format content found in the chat.\n" +
-                "Make sure the AI response contains lines starting with 'Q:' and 'A:'",
-                "No Flashcards Found",
-                JOptionPane.INFORMATION_MESSAGE
-            );
+            if (!foundCards) {
+                JOptionPane.showMessageDialog(
+                    this,
+                    "No valid flashcards found in the file.",
+                    "No Flashcards Found",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            }
+        } catch (Exception e) {
+            showError("Error parsing flashcards: " + e.getMessage());
         }
     }
 
@@ -369,6 +466,41 @@ public class ChatGUI extends JFrame {
             showError(e.getMessage());
             showProgress(false);
         });
+    }
+
+    private String escapeJson(String text) {
+        return text
+            .replace("\"", "\\\"")
+            .replace("\n", "\\n")
+            .replace("\r", "\\r")
+            .replace("\t", "\\t");
+    }
+
+    private String unescapeJson(String text) {
+        return text
+            .replace("\\\"", "\"")
+            .replace("\\n", "\n")
+            .replace("\\r", "\r")
+            .replace("\\t", "\t");
+    }
+
+    private static class QAPair {
+
+        private final String question;
+        private final String answer;
+
+        public QAPair(String question, String answer) {
+            this.question = question;
+            this.answer = answer;
+        }
+
+        public String getQuestion() {
+            return question;
+        }
+
+        public String getAnswer() {
+            return answer;
+        }
     }
 
     private void showError(String message) {
