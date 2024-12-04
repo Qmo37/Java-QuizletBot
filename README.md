@@ -20,11 +20,11 @@ We also provide a simple GUI for you to use this program.
 
 ### Using the terminal
 3. Run the following command to compile the program
-  nvm clean package
+```nvm clean package```
 4. Run the following command to declare the environment variables for API Key
-  export ANTHROPIC_API_KEY=sk-ant-api03...(Contact us to get the API key or USE YOUR OWN KEY)
+```export ANTHROPIC_API_KEY=sk-ant-api03...(Contact us to get the API key or USE YOUR OWN KEY)```
 5. Run the following command to start the program
-  java -cp target/ai-chat-client-1.0-SNAPSHOT.jar com.aichat.ChatGUI
+```java -cp target/ai-chat-client-1.0-SNAPSHOT.jar com.aichat.ChatGUI```
 
 ### Using the IDE (Not tested yet)
 3. Open the project in your favorite IDE
