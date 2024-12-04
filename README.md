@@ -47,7 +47,7 @@ We also provide a simple GUI for you to use this program.
   #### For Windows
   Add the maven bin directory to the PATH
 
-- API Key from ChatGPT or Claude API
+- API Key from ChatGPT or Claude API (Now the code is optimized for Claude, you need to modify the code if you want to use OpenAI API.)
 
 ## Usage
 1. Download the files from the repository, using git clone or download the zip file
